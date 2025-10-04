@@ -14,7 +14,7 @@ import {
   Users
 } from 'lucide-react';
 
-import type { Task, Screen } from '../routes/_authenticated/index';
+import type { Task, Screen } from '../../routes/_authenticated/index';
 
 
 interface DashboardProps {

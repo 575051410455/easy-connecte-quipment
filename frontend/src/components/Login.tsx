@@ -56,18 +56,14 @@ export function Login({ onLogin }: LoginProps) {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <div className="mx-auto mb-4 w-16 h-16 bg-primary rounded-lg flex items-center justify-center">
-            <span className="text-white text-2xl">🏨</span>
+          <div className="mx-auto mb-4 w-32 h-32 rounded-lg flex items-center justify-center">
+            <img src="../../public/images/logoeasy.png" alt="Easy Connect Equipment" />
           </div>
-          <CardTitle className="text-2xl">EasyConnect</CardTitle>
-          <CardDescription>
-            ระบบจัดการงานซ่อมบำรุงโรงแรม
-          </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="username">ชื่อผู้ใช้</Label>
+              <Label htmlFor="username">Username</Label>
               <Input
                 id="username"
                 type="text"
@@ -78,7 +74,7 @@ export function Login({ onLogin }: LoginProps) {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">รหัสผ่าน</Label>
+              <Label htmlFor="password">Password</Label>
               <Input
                 id="password"
                 type="password"
@@ -93,7 +89,7 @@ export function Login({ onLogin }: LoginProps) {
               className="w-full" 
               disabled={loading}
             >
-              {loading ? 'กำลังเข้าสู่ระบบ...' : 'เข้าสู่ระบบ'}
+              {loading ? 'Loading...' : 'Login'}
             </Button>
           </form>
           

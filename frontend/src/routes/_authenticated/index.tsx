@@ -1,12 +1,19 @@
 import { useState } from 'react';
-import { Dashboard } from '@/components/Dashboard';
-import { Sidebar } from '@/components/Sidebar';
 
 import { Login } from '@/components/Login';
-import { Header } from '@/components/Header';
 import { createFileRoute } from '@tanstack/react-router';
 import { AppSidebar } from '@/components/app-sidebar';
-import { SidebarProvider } from '@/components/ui/sidebar';
+
+import { SiteHeader } from '@/components/site-header';
+import { SectionCards } from '@/components/section-cards'; 
+
+import data from '@/data/tasks.json';
+
+import {
+  SidebarInset,
+  SidebarProvider,
+} from "@/components/ui/sidebar"
+
 
 
 export type UserRole = 'manager' | 'staff';
@@ -151,30 +158,30 @@ function Index() {
   }
 
   return (
-  <SidebarProvider >
-    <div className="flex h-screen bg-background">
-      <Sidebar 
-        currentUser={currentUser}
-        currentScreen={currentScreen}
-        onNavigate={handleNavigate}
-      />
-      <AppSidebar />
-      <div className="flex-1 flex flex-col">
-        <Header 
-          currentUser={currentUser}
-          onLogout={handleLogout}
-        />
-        <main className="flex-1 overflow-auto">
-          {currentScreen === 'dashboard' && (
-            <Dashboard 
-              tasks={tasks}
-              onNavigate={handleNavigate}
-            />
-          )}
-        </main>
-      </div>
-    </div>
-  </SidebarProvider>
+  <SidebarProvider
+    style={
+      {
+        "--sidebar-width": "calc(var(--spacing) * 72)",
+        "--header-height": "calc(var(--spacing) * 12)",
+      } as React.CSSProperties 
+    }
+  >
+      <AppSidebar variant="inset" />
+      <SidebarInset>
+        <SiteHeader />
+          <div className="flex flex-1 flex-col">
+            <div className="@container/main flex flex-1 flex-col gap-2">
+              <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
+                <SectionCards />
+                <div className="px-4 lg:px-6">
+                  <ChartAreaInteractive />
+                </div>
+                <DataTable data={data} />
+              </div>
+            </div>
+          </div>
+      </SidebarInset>
+    </SidebarProvider>
   );
 }
 

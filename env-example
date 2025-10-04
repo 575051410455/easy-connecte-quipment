@@ -1,0 +1,1 @@
+DATABASE_URL=postgresql://postgres:@182.52.50.173:5432/test_db

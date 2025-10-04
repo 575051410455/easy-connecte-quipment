@@ -1,0 +1,27 @@
+{
+  "name": "app-easy-connect",
+  "module": "backend/index.ts",
+  "type": "module",
+  "scripts": {
+    "start": "bun run backend/index.ts",
+    "dev": "bun --watch backend/index.ts",
+    "db:migrate": "bun drizzle-kit generate"
+  },
+  "private": true,
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/pg": "^8.15.5",
+    "drizzle-kit": "^0.31.4"
+  },
+  "peerDependencies": {
+    "typescript": "^5.9.2"
+  },
+  "dependencies": {
+    "@hono/zod-validator": "^0.7.2",
+    "dotenv": "^17.2.2",
+    "drizzle-orm": "^0.44.5",
+    "hono": "^4.9.7",
+    "pg": "^8.16.3",
+    "zod": "^4.1.8"
+  }
+}

@@ -6,6 +6,7 @@ import { Login } from '@/components/Login';
 import { Header } from '@/components/Header';
 import { createFileRoute } from '@tanstack/react-router';
 import { AppSidebar } from '@/components/app-sidebar';
+import { SidebarProvider } from '@/components/ui/sidebar';
 
 
 export type UserRole = 'manager' | 'staff';
@@ -145,11 +146,12 @@ function Index() {
     setTasks(prev => [...prev, task]);
   };
 
-    if (!currentUser) {
+  if (!currentUser) {
     return <Login onLogin={handleLogin} />;
   }
 
   return (
+  <SidebarProvider >
     <div className="flex h-screen bg-background">
       <Sidebar 
         currentUser={currentUser}
@@ -172,6 +174,7 @@ function Index() {
         </main>
       </div>
     </div>
+  </SidebarProvider>
   );
 }
 

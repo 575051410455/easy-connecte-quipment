@@ -3,8 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/
 import { Input } from './ui/input';
 import { Button } from './ui/button';
 import { Label } from './ui/label';
-
-import type { User } from '@/routes/_authenticated/index';
+import type { User } from '@/routes/_authenticated';
 
 interface LoginProps {
   onLogin: (user: User) => void;
@@ -17,7 +16,7 @@ export function Login({ onLogin }: LoginProps) {
 
   // Mock users for demo
   const mockUsers: Record<string, User> = {
-    'manager': {
+    '1': {
       id: 'manager1',
       name: 'ผู้จัดการ สมศักดิ์',
       role: 'manager',
@@ -44,7 +43,7 @@ export function Login({ onLogin }: LoginProps) {
     // Simulate API call
     setTimeout(() => {
       const user = mockUsers[username];
-      if (user && password === 'password') {
+      if (user && password === '1') {
         onLogin(user);
       } else {
         alert('ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง');

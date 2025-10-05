@@ -1,6 +1,6 @@
 import { Button } from '../ui/button';
 import { Bell } from 'lucide-react';
-import type { User } from '@/routes/_authenticated/index';
+import type { User } from '@/routes/dash';
 import { NavUser } from './nav-user';
 
 import {

@@ -1,17 +1,38 @@
 
-import { Outlet, createRootRoute } from '@tanstack/react-router'
+import { createRootRoute, Outlet } from '@tanstack/react-router';
+import { AppSidebar } from "@/components/app-sidebar"
+
+import { SiteHeader } from "@/components/site-header"
+import {
+  SidebarInset,
+  SidebarProvider,
+} from "@/components/ui/sidebar"
+
+import { useAuth } from "@/lib/auth";
+
 
 export const Route = createRootRoute({
-  component: Root,
-})
+  component: RootLayout,
+});
 
+function RootLayout() {
 
+    const {logout } = useAuth();
 
-function Root() {
-    return (
-        <>
-            <Outlet />
-            {/* <TanStackRouterDevtools /> */}
-        </>
-    )
+  return (
+    <SidebarProvider
+      style={
+        {
+          "--sidebar-width": "calc(var(--spacing) * 72)",
+          "--header-height": "calc(var(--spacing) * 12)",
+        } as React.CSSProperties
+      }
+    >
+      <AppSidebar variant="inset" />
+      <SidebarInset>
+        <SiteHeader onLogout={logout}/>
+        <Outlet />
+      </SidebarInset>
+    </SidebarProvider>
+  );
 }

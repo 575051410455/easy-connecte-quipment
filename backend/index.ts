@@ -18,4 +18,4 @@ Bun.serve({
 })
 
 
-console.log(`Server running on http://localhost:${ProcessEnv.PORT}`);
+console.log(`🚀 Server running on http://localhost:${ProcessEnv.PORT}`);

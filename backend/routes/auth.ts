@@ -6,8 +6,6 @@ import { users } from "../db/schema";
 import { hashPassword, verifyPassword, createToken } from "../lib/auth";
 import { eq } from "drizzle-orm";
 
-
-
 const registerSchema = z.object({
   email: z.string().email(),
   password: z.string().min(6),
@@ -23,7 +21,7 @@ export const authRoutes = new Hono()
 
   .post("/register", zValidator("json", registerSchema), async (c) => {
     const { email, password, name } = c.req.valid("json");
-
+    console.log("Registering user:", email, name);
     // Check if user exists
     const existingUser = await db.query.users.findFirst({
       where: eq(users.email, email),

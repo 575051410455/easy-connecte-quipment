@@ -5,7 +5,9 @@
   "scripts": {
     "start": "bun run backend/index.ts",
     "dev": "bun --watch backend/index.ts",
-    "db:migrate": "bun drizzle-kit generate"
+    "db:migrate": "bun drizzle-kit generate",
+    "db:studio": "bun drizzle-kit studio",
+    "db:push": "bun drizzle-kit push"
   },
   "private": true,
   "devDependencies": {

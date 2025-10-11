@@ -1,4 +1,4 @@
-import { Context, Next } from "hono";
+import type { Context, Next } from "hono";
 import { verifyToken } from "../lib/auth";
 
 export type AuthUser = {

@@ -1,11 +1,11 @@
-
+import { queryOptions, useMutation, useQueryClient } from '@tanstack/react-query'
 import { hc } from 'hono/client'
-import { type ApiRoutes } from "@/backend/app"
-import { type insertUser } from "@/backend/sharedType"
+import { type ApiRoutes } from "@backend/app"
+import { type selectUser } from "@backend/sharedType"
 
 const client = hc<ApiRoutes>('/')
 
-export const api = client.api
+
 
 export interface User {
   id: string;
@@ -22,7 +22,7 @@ export interface AuthResponse {
 }
 
 async function getCurrentUser() {
-    const res = await api.users.me.$get()
+    const res = await client.api.users.me.$get()
     if (!res.ok) {
         throw new Error("Failed to fetch user")
     }
@@ -37,13 +37,174 @@ export const userQueryOptions = {
 }
 
 
-export async function getAllUsers() {
-    const res = await api.users.$get();
-    if (!res.ok) {
-        throw new Error("server error");
-    }
-
-    const data = await res.json();
-    return data;
+// Helper function to handle RPC responses
+async function handleResponse<T>(res: Response): Promise<T> {
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error(error.error || "Request failed");
+  }
+  return res.json();
 }
 
+// ============================================
+// Auth API
+// ============================================
+
+export async function login(email: string, password: string): Promise<AuthResponse> {
+  const res = await client.api.auth.login.$post({
+    json: { email, password },
+  });
+  return handleResponse<AuthResponse>(res);
+}
+
+export async function register(
+  email: string,
+  password: string,
+  name: string
+): Promise<selectUser> {
+  const res = await client.api.auth.register.$post({
+    json: { email, password, name },
+  });
+  return handleResponse<selectUser>(res);
+}
+
+
+// ============================================
+// User API with Query Options
+// ============================================
+
+export const getMeQueryOptions = (token: string) =>
+  queryOptions({
+    queryKey: ['user', 'me'],
+    queryFn: async () => {
+      const res = await client.api.users.me.$get(undefined, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return handleResponse<{ user: User }>(res);
+    },
+    enabled: !!token,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+
+export const getAllUsersQueryOptions = (token: string) =>
+  queryOptions({
+    queryKey: ['users', 'all'],
+    queryFn: async () => {
+      const res = await client.api.users.$get(undefined, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return handleResponse<{ users: User[] }>(res);
+    },
+    enabled: !!token,
+    staleTime: 1 * 60 * 1000, // 1 minute
+  });
+
+// Legacy functions for backward compatibility
+export async function getMe(token: string): Promise<{ user: User }> {
+  const res = await client.api.users.me.$get(undefined, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return handleResponse<{ user: User }>(res);
+}
+
+export async function getAllUsers(token: string): Promise<{ users: User[] }> {
+  const res = await client.api.users.$get(undefined, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return handleResponse<{ users: User[] }>(res);
+}
+
+// ============================================
+// User Mutation Hooks
+// ============================================
+
+export function useCreateUser(token: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (data: { email: string; password: string; name: string; role: "user" | "admin" }) => {
+      const res = await client.api.users.$post({
+        json: data,
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return handleResponse<{ user: User }>(res);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['users'] });
+    },
+  });
+}
+
+export function useUpdateUser(token: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      userId,
+      data
+    }: {
+      userId: string;
+      data: { email?: string; password?: string; name?: string; role?: "user" | "admin" }
+    }) => {
+      const res = await client.api.users[":id"].$patch({
+        param: { id: userId },
+        json: data,
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return handleResponse<{ user: User }>(res);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['users'] });
+    },
+  });
+}
+
+export function useDeleteUser(token: string) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (userId: string) => {
+      const res = await client.api.users[":id"].$delete({
+        param: { id: userId },
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return handleResponse<{ message: string }>(res);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['users'] });
+    },
+  });
+}
+
+// Legacy functions for backward compatibility
+export async function createUser(
+  token: string,
+  data: { email: string; password: string; name: string; role: "user" | "admin" }
+): Promise<{ user: User }> {
+  const res = await client.api.users.$post({
+    json: data,
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return handleResponse<{ user: User }>(res);
+}
+
+export async function updateUser(
+  token: string,
+  userId: string,
+  data: { email?: string; password?: string; name?: string; role?: "user" | "admin" }
+): Promise<{ user: User }> {
+  const res = await client.api.users[":id"].$patch({
+    param: { id: userId },
+    json: data,
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return handleResponse<{ user: User }>(res);
+}
+
+export async function deleteUser(token: string, userId: string): Promise<{ message: string }> {
+  const res = await client.api.users[":id"].$delete({
+    param: { id: userId },
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return handleResponse<{ message: string }>(res);
+}

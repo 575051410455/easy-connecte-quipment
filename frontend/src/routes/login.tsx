@@ -2,12 +2,12 @@ import { createFileRoute, useNavigate, Navigate } from "@tanstack/react-router";
 import { useForm } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
 import { useAuth } from "@/lib/auth";
-import { login } from "@/lib/api";
+import { login as apiLogin } from "@/lib/api";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Link } from "@tanstack/react-router";
+
 
 export const Route = createFileRoute("/login")({
   component: LoginComponent,
@@ -97,9 +97,7 @@ function LoginComponent() {
             </Button>
             <p className="text-sm text-muted-foreground text-center">
               Don't have an account?{" "}
-              <Link to="/register" className="text-primary hover:underline">
-                Register
-              </Link>
+              
             </p>
           </CardFooter>
         </form>

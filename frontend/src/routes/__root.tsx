@@ -6,6 +6,7 @@ import { SiteHeader } from "@/components/site-header"
 import {
   SidebarInset,
   SidebarProvider,
+  SidebarTrigger,
 } from "@/components/ui/sidebar"
 
 import { useAuth } from "@/lib/auth";
@@ -17,7 +18,17 @@ export const Route = createRootRoute({
 
 function RootLayout() {
 
-    const {logout } = useAuth();
+  const { logout, isAuthenticated } = useAuth();
+
+  if(!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-background">
+        <main className="container mx-auto px-4 py-8">
+          <Outlet />
+        </main>
+      </div>
+    );
+  }
 
   return (
     <SidebarProvider
@@ -30,7 +41,13 @@ function RootLayout() {
     >
       <AppSidebar variant="inset" />
       <SidebarInset>
-        <SiteHeader onLogout={logout}/>
+        <header className='flex h-16 shrink-0 items-center gap-2 border-b px-4'>
+          <SidebarTrigger className='-ml-1' />
+          <SiteHeader onLogout={logout}/>
+        </header>
+        <main>
+          <Outlet />
+        </main>
         <Outlet />
       </SidebarInset>
     </SidebarProvider>

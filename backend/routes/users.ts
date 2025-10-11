@@ -51,6 +51,24 @@ export const usersRoutes = new Hono()
   return c.json({ user });
 })
 
+.get("users", async (c) => {
+  const res = await db.query.users.findMany({
+        columns: {
+      id: true,
+      email: true,
+      name: true,
+      role: true,
+      createdAt: true,
+    },
+  });
+  
+  c.status(201)
+  return c.json({
+    users: res
+  });
+
+})
+
 // Admin only - Get all users
 .get("/", authMiddleware, requireRole("admin"), async (c) => {
   const allUsers = await db.query.users.findMany({

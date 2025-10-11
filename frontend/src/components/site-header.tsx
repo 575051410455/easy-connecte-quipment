@@ -5,7 +5,7 @@ import { NavUser } from "@/components/layout/nav-user"
 import { Bell } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 
-const data = {
+const NewData = {
   user: {
     name: "shadcn",
     email: "m@example.com",
@@ -16,10 +16,15 @@ const data = {
 
 interface HeaderProps {
   onLogout: () => void;
+  data: {
+    name: string,
+    email: string,
+    avatar?: string,
+  }
 }
 
 
-export function SiteHeader({  onLogout }: HeaderProps) {
+export function SiteHeader({  onLogout, data }: HeaderProps) {
 
   
   return (
@@ -35,7 +40,7 @@ export function SiteHeader({  onLogout }: HeaderProps) {
           <Button variant="ghost" size="sm">
             <Bell className="w-4 h-4" />
           </Button>
-          <NavUser user={data.user} onLogout={onLogout}/>
+          <NavUser user={data} onLogout={onLogout}/>
         </div>
       </div>
     </header>

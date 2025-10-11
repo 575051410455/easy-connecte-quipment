@@ -6,7 +6,6 @@ import { SiteHeader } from "@/components/site-header"
 import {
   SidebarInset,
   SidebarProvider,
-  SidebarTrigger,
 } from "@/components/ui/sidebar"
 
 import { useAuth } from "@/lib/auth";
@@ -18,7 +17,7 @@ export const Route = createRootRoute({
 
 function RootLayout() {
 
-  const { logout, isAuthenticated } = useAuth();
+  const { logout, isAuthenticated, user } = useAuth();
 
   if(!isAuthenticated) {
     return (
@@ -41,14 +40,10 @@ function RootLayout() {
     >
       <AppSidebar variant="inset" />
       <SidebarInset>
-        <header className='flex h-16 shrink-0 items-center gap-2 border-b px-4'>
-          <SidebarTrigger className='-ml-1' />
-          <SiteHeader onLogout={logout}/>
-        </header>
-        <main>
+          <header className=' h-16 shrink-0 gap-2 px-4'>
+            <SiteHeader data={user} onLogout={logout}  />
+          </header>
           <Outlet />
-        </main>
-        <Outlet />
       </SidebarInset>
     </SidebarProvider>
   );

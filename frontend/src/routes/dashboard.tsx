@@ -1,15 +1,14 @@
 import { DataTable } from "@/components/layout/data-table";
 
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, Navigate } from '@tanstack/react-router';
 
 import { ChartAreaInteractive } from "@/components/layout/chart-area-interactive";
 
 import { SectionCards } from '@/components/section-cards'; 
 
-import datas from '@/routes/data.json';
+import data from '@/routes/data.json';
 
-import { userQueryOptions } from '@/lib/api';
-import { useQuery } from "@tanstack/react-query";
+import { useAuth } from "@/lib/auth";
 
 
 
@@ -22,30 +21,22 @@ export const Route = createFileRoute('/dashboard')({
 
 function Index() {
 
-  const { isPending, data, error } = useQuery(userQueryOptions);
+  const { isAuthenticated } = useAuth();
 
-  if (isPending) {
-    return <div>Loading...</div>;
+  if (!isAuthenticated) {
+    return <Navigate to="/login" />;
   }
-
-  if (error) {
-    return <div>Error: {(error as Error).message}</div>;
-  }
-
-  console.log("Current user:", data);
 
 
   return (
- 
   <div className="flex flex-1 flex-col">
     <div className="@container/main flex flex-1 flex-col gap-2">
       <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
-        <h1></h1>
         <SectionCards />
         <div className="px-4 lg:px-6">
           <ChartAreaInteractive />
         </div>
-        <DataTable data={datas} />
+        <DataTable data={data} />
       </div>
     </div>
   </div>

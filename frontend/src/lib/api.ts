@@ -1,11 +1,10 @@
-import { queryOptions, useMutation, useQueryClient } from '@tanstack/react-query'
 import { hc } from 'hono/client'
-import { type ApiRoutes } from "@backend/app"
-import { type selectUser } from "@backend/sharedType"
+import type { ApiRoutes } from '../../../backend/app'
+import { queryOptions, useMutation, useQueryClient } from '@tanstack/react-query'
 
-const client = hc<ApiRoutes>('/')
+// Create the RPC client
 
-
+const client = hc<ApiRoutes>('http://localhost:3000/')
 
 export interface User {
   id: string;
@@ -20,22 +19,6 @@ export interface AuthResponse {
   user: User;
   token: string;
 }
-
-async function getCurrentUser() {
-    const res = await client.api.users.me.$get()
-    if (!res.ok) {
-        throw new Error("Failed to fetch user")
-    }
-    const data = await res.json()
-    return data;
-}
-
-export const userQueryOptions = {
-    queryKey: ['currentUser'],
-    queryFn: getCurrentUser,
-    staleTime: Infinity,
-}
-
 
 // Helper function to handle RPC responses
 async function handleResponse<T>(res: Response): Promise<T> {
@@ -61,13 +44,12 @@ export async function register(
   email: string,
   password: string,
   name: string
-): Promise<selectUser> {
+): Promise<AuthResponse> {
   const res = await client.api.auth.register.$post({
     json: { email, password, name },
   });
-  return handleResponse<selectUser>(res);
+  return handleResponse<AuthResponse>(res);
 }
-
 
 // ============================================
 // User API with Query Options
@@ -208,3 +190,6 @@ export async function deleteUser(token: string, userId: string): Promise<{ messa
   });
   return handleResponse<{ message: string }>(res);
 }
+
+// Export the client for direct use if needed
+export { client }

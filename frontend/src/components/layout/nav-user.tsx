@@ -28,6 +28,8 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
+import { Link } from "@tanstack/react-router"
+
 
 export function NavUser({
   user,
@@ -36,7 +38,7 @@ export function NavUser({
   user: {
     name: string
     email: string
-    avatar: string
+    avatar?: string
   };
     onLogout?: () => void;
 }) {
@@ -82,9 +84,11 @@ export function NavUser({
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <BadgeCheck />
-                Account
+              <DropdownMenuItem asChild>
+                <Link to="/user">
+                  <BadgeCheck className="h-4 w-4"/>
+                  <span>Account</span>
+                </Link>
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <CreditCard />
